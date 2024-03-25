@@ -1,0 +1,169 @@
+#!/bin/sh
+# Archived function ===========================
+# probably don't need anymore
+umpv_x() {
+	# doesnt really work so well
+	umpv \
+	 	--no-focus-on-open \
+		--force-window=immediate \
+		--loop-file \
+		--wid="$XID" \
+		$FILE &
+}
+mpv_socy() {
+	if pgrep -f "mpv .*$SOCKET" > /dev/null 2>&1; then
+		echo "ipc server running"
+		mpvc \
+			--socket "${SOCKET}" \
+			-a $FILE &
+	  
+	else
+			mpv \
+					--idle=once \
+					--input-ipc-server="${SOCKET}" \
+					--force-window \
+					--wid="$XID" \
+					$FILE &
+	fi
+}
+mpv_socz() {
+	# The nnn mpvc variant?
+	mpvc.nnn -S "$SOCKET" -a "$FILE" &
+}
+kill_viewer_videox () {
+				#mpvid="$(pgrep -f "mpv .*$SOCKET")"
+				# DESCRIPTION:
+				# If Previous file was video, and current file is video: return
+				# Pevious was video, current is not a video, then pause mpv current
+				video_test_prev=$(echo "$MIME_PREV" | grep "video")
+				video_test=$(echo "$MIME" | grep "video")
+				if [ -n "$video_test_prev"   ]; then
+						#if [ -n "$video_test" && -n "$mpvid" ]; then
+							# DEBUGING:
+							echo $video_test >> $LOGX
+							echo "VIDEO MIME TEST" >> $LOGX
+						#[ ! -n "$video_test" ] && mpvc_pause
+						[ ! -n "$video_test" ] && mpvc_pause
+						return
+				fi
+        if [ -n "$VIEWERPID" ] && jobs -p | grep "$VIEWERPID" ; then
+            kill "$VIEWERPID"
+        fi
+}
+# ==============================================
+#TODO:
+#	- FIND whats useful and not useful in this file
+# ================================================
+
+# ==================================
+# mpvc --------------------
+SOCKET=${MPVC_SOCKET:-/tmp/mpvsocket}
+			mpvc -S "$SOCKET" -a "$FILE" &
+#			mpvc -S "$SOCKET" -a "$(basename $FILE)" &
+#			mpvc -a $FILE &
+
+#$ =================================
+# mpvc.b -------------------
+soc="/tmp/mpvsocket.$TABBEDPID"
+# - can put this at the bottom of start_tabbed
+
+# =====================================
+# mpvc.b t -------------------
+
+MPVPID="$(pgrep -f 'mpv .*$soc')"; mpvpid="$MPVPID"
+
+kill_viewer () {
+	echo "  begginning kill function" >> $logf
+     if [ -n "$viewerpid" ] && jobs -p | grep "$viewerpid"; then
+         kill "$viewerpid"; kill $VIEWERPID
+	    echo "    kill viewerpid" >> $logf
+      fi
+	if [ -n "$mpvpid" ]; then 
+		echo "    kill mpv" >> $logf
+#		mpvc.nnn -S $soc --kill
+#		kill "$mpvpid"; kill "$MPVPID"
+	 fi
+}
+
+# in loop
+trap sigint_kill SIGINT
+
+if pgrep -f "mpv .*$soc" > /dev/null 2>&1; then
+						mpvc.nnn --socket $soc --clear &
+
+#mpvc.nnn --socket $soc --clear
+				mpvc.nnn -S $soc --add "$file"
+#				mpvc.nnn --socket $soc --add "$file"
+#				echo "  using -video- case" >> $logf
+#			     mpvc.strxid "$FILE" "$soc" "$XID"
+#			     i3-msg '[id="$XID"] focus'
+#				i3-msg '[title="$(basename $FILE) - mpv"] focus'
+
+
+# =============================================
+# ============================================
+# prev-ta
+SOCKET=${MPVC_SOCKET:-/tmp/mpvsocket-prev}
+soc="${MPVC_SOCKET:-/tmp/mpvcsocket$TABBEDPID}"
+mpvc.str "$FILE" "$soc" "$XID"
+
+# ==================================
+# prev-tz
+#				 mpvc.str "$FILE" "$soc" "$XID" "image" &
+#				 doesnt work for 'images' atm
+
+#			 kill_viewer
+#			 if which mpv >/dev/null 2>&1 ; then
+#				mpvc.nnn -S "$soc" -c
+#                    mpvc.nnn -S "$soc" -I "$FILE"
+#coulnt get the above working properly
+
+if pgrep -f "mpv .*$soc" > /dev/null 2>&1; then
+					mpvc.nnn -S "$soc" -c
+				    else
+					kill_viewer
+					mpv \
+						--idle=yes \
+						--input-ipc-server="$soc" \
+						--wid="$XID" \
+						--force-window \
+						--loop \
+						--loop-file &
+#						"$FILE" &
+				fi
+			     mpvc.nnn -S "$soc" -a "$FILE"
+
+
+#	   xdotool windowactivate "$MAINWINDOW"
+# aiming to use mpvc.nnn within a tabbed window
+#jobs # Get rid of the "Completed" entries
+#move 'killmpv' to mpv section?? place just below???
+
+ if pgrep -f "mpv .*$SOCKET" > /dev/null 2>&1; then
+		echo "ipc server running"
+	    else
+		exec mpv \
+					--idle=once \
+					--input-ipc-server="${SOCKET}" \
+					--force-window \
+					--x11-name="preview" &
+				fi
+
+# LEGACY CODE:
+# BEGIN VIEWING STUFF
+      	video_test="$(echo "$MIME_PREV" | grep "video")"
+				mpvid=$(pgrep -f "mpv .*$SOCKET")
+				if [ -n "$video_test" ]; then
+					#if [ -n "$video_test" && -n "$mpvid" ]; then
+						echo "video mime test" >> $LOGX
+						mpvc_cmd $FILE
+				else
+					kill_viewer
+					echo "feed new file" >> $LOGX
+					# Pull up Previewer programs
+					mime_switch "${FILE}"
+						get_viewer_pid
+						window_attention
+				fi
+
+alias elnuke="term_nuke $XID $FILE"

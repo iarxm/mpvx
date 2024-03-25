@@ -1,0 +1,13 @@
+# MPV 
+- The idea for using mpv to seamlessly preview is to try use one of the tools that connects to a current mpv instance, and somehow integrates that into a 'tabbed' instance
+
+## TOOLS:
+- mpvc - connects to current instance
+- umpv
+- mpvctl
+- mpvx: script grabbed from a comment in an issue thread on github
+
+
+## OTHERS:
+- RUST version of mpvc: https://gitlab.com/mpv-ipc/mpvc
+- NCMPCC alike, mostly for audio it looks like https://gitlab.com/mpv-ipc/ncmpvc

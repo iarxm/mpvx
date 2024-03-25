@@ -1,0 +1,90 @@
+#!/bin/bash
+cmd="$1" && shift 1
+
+# Load into current instance
+mpv_soc() {
+	pid=$(pidof "mpv")
+
+	if [[ "$pid" ]]; then
+    wmctrl -x -R gl.mpv
+	  echo "{ \"command\": [\"loadfile\", \"$1\"] }" | socat - "/tmp/mpv-socket"
+
+		else
+		mpv \
+			--input-ipc-server=/tmp/mpv-socket \
+			"$1"
+	fi
+}
+# Load into mpv playlist que
+mpv_soc_playl() {
+	pid=$(pidof "mpv")
+
+	if [[ "$pid" ]]; then
+    wmctrl -x -R gl.mpv
+    echo "{ \"command\": [\"loadfile\", \"$1\", \"append\"] }" | socat - "/tmp/mpv-socket"
+		echo playlist-next | socat - "/tmp/mpv-socket"    
+		# echo '{ "command": ["playlist-next"] }' | socat - "/tmp/mpv-socket"
+
+		else
+    mpv \
+			--input-ipc-server=/tmp/mpv-socket \
+			"$1"
+
+	fi
+}
+
+mpv_nnn_str() {
+	file=$1
+	soc=$2
+	xid=$3
+	
+	if pgrep -f "mpv .*$soc" > /dev/null 2>&1; then
+		mpvc.nnn --socket $soc --clear &
+		else 
+			mpvid "$file" "$soc" "$xid"
+	fi
+
+	mpvc.nnn --socket $soc --clear
+	mpvc.nnn --socket $soc --add "$file"
+
+}
+
+mpv_noconfig() {
+	mpv \
+		--osd-level=0 \
+		--no-config \
+		$1
+}
+#	--profile=movie \
+
+mpv_id() {
+#!/bin/sh
+file="$1"
+soc="$3"
+xid="$3"
+
+if [ -n $xid]; then
+ mpv \
+	--wid="$xid" \
+	--idle=yes \
+	--input-ipc-server=$soc \
+	--force-window \
+	--loop-file \
+	"$file" &
+ else
+	mpv \
+	--idle=yes \
+	--input-ipc-server=$soc \
+	--force-window \
+	--loop-file \
+	"$file" &
+fi
+}
+
+# CASES =====================================
+case $cmd in
+	soc) mpv_soc $1 ;;
+	playl) mpv_playl $1;;
+esac
+
+

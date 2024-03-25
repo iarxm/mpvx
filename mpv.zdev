@@ -1,0 +1,55 @@
+
+echo "adding to playlist" >> ~/zlg
+echo "finishing script body" >> ~/zlg
+#mpvc.nnn --socket "$soc" --add "$file"
+#above command works with '&' removed
+
+
+if pgrep -f "mpv .*$soc" > /dev/null 2>&1; then
+echo "blah" >> ~/zlg
+#	mpvc.nnn --socket "$soc" --clear &
+		# clear playlist '-c'
+fi
+
+
+else
+	mpv  $opt \
+		--idle=yes \
+		--input-ipc-server="$soc" \
+		--force-window \
+		"$file" &
+#		--loop-file \
+
+#		--wid="$xid" \
+else
+	echo "starting mpvc instance" >> ~/zlg
+	mpv  $opt \
+		--idle=yes \
+		--input-ipc-server="$soc" \
+		--wid="$xid" \
+		--force-window \
+		--loop-file \
+		"$file" &
+mime=$(file -bL --mime-type "$file")
+img=$(echo $mime | grep image)
+if [ -n "$4" ]; then opt="--$4"; fi
+if [ -n "$img" ]; then
+	mpvc.nnn -S "$soc" --image -a "$file"
+fi
+
+
+
+#mpvc.nnn -S "$soc" -a "$FILE"
+#	kill_viewer
+
+## testing
+echo "xid: $xid" >> ~/zlg
+echo "soc: $soc" >> ~/zlg
+echo "file: $file" >> ~/zlg
+echo "starting mpvc.str script body" >> ~/zlg
+
+echo "clearing playlist" >> ~/zlg
+echo "add image to mpvc" >> ~/zlg
+
+#mpvc.nnn -S "$soc" -a "$file" &
+

@@ -1,0 +1,3 @@
+[submodule "mpv-sockets"]
+	path = mpv-sockets
+	url = /dat/ud/dsa/mpvx/mpv-sockets

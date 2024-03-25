@@ -1,0 +1,3 @@
+[submodule "mpv-sockets"]
+     path = mpv-sockets
+     url = git@github.com:zbyyt/mpv-sockets.git
