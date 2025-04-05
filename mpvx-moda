@@ -2,8 +2,8 @@
 # vim:ft=bash
 # mpvx modified by Iarom Madden
 SOCKET="$1" && shift 1
-	# must be of the form /tmp/mpv...
-	# MPV_SOCKET="/tmp/mpvsockets/soc"
+    # must be of the form /tmp/mpv...
+    # MPV_SOCKET="/tmp/mpvsockets/soc"
 
 # Save args and options
 POSITIONAL_ARGS=()
@@ -55,37 +55,42 @@ play () {
   commandMpv "{ \"command\": [\"loadfile\", \"$2\", \"$1\", \"$3\"] }"
 } 
 
-# Replaces what it is currently playing
-playFirst () {
-  play "replace" "$@"
+playFirst ()
+{
+    # Replaces what it is currently playing
+    play "replace" "$@"
 }
 
-# Appends file to queue and instantly plays it next
-playNext () {
-  wmctrl -x -R gl.mpv
-  play "append" "$@"
-  commandMpv playlist-next
+playNext ()
+{
+    # Appends file to queue and instantly plays it next
+    wmctrl -x -R gl.mpv
+    play "append" "$@"
+    commandMpv playlist-next
 }
 
-# Starts mpv allowing remote (and insecure) control
-start () {
-  mpv \
-		--input-ipc-server="${SOCKET}" \
-		--player-operation-mode=pseudo-gui &
+start ()
+{
+    # Starts mpv allowing remote (and insecure) control
+    mpv \
+        --input-ipc-server="${SOCKET}" \
+        --player-operation-mode=pseudo-gui &
   # Sleep needed to open mpv before immediately sending command with next file
   sleep 0.05
 }
+
 #pid=$(pidof "mpv")
 pid=$(pgrep -f "mpv .*$SOCKET")
 #if pgrep -f "mpv .*$SOCKET" >> /dev/null 2>&1; then
+
 if [[ "$pid" ]]; then
-	#echo "SOC: $SOCKET"
-	#echo "PID: $pid"
-  #If instance is running
-  playNext "$1" "$OPTIONS"
+    #echo "SOC: $SOCKET"
+    #echo "PID: $pid"
+    #If instance is running
+    playNext "$1" "$OPTIONS"
 else
-  # Start instance and play first file
-  start
-  playFirst "$1" "$OPTIONS"
+    # Start instance and play first file
+    start
+    playFirst "$1" "$OPTIONS"
 fi
 
