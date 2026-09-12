@@ -1,4 +1,3 @@
-
 # MPV 
 
 - The idea for using mpv to seamlessly preview is to try use one of the tools that connects to a current mpv instance, and somehow integrates that into a 'tabbed' instance
