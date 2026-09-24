@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# This script requires:
-# - that the directory $HOME/.mpv exist 
-# - that the program socat be installed
-# - that you start mpv with the unix socket feature pointing at that directory
-#   I recommend an alias in your .bashrc or equivalent file:
+
+# this script requires
+#  the directory $HOME/.mpv exist 
+#  the program socat be installed
+#  you start mpv with the unix socket feature pointing at that directory
+#  I recommend an alias in your .bashrc or equivalent file:
 #       alias mpv="mpv --input-unix-socket=$HOME/.mpv/socket"
 
 #SOCKET="/tmp/mpvsocket.ctl"

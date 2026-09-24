@@ -1,8 +1,8 @@
 #!/bin/sh
-# Archived function ===========================
-# probably don't need anymore
+# archived function
+# probably dont need
 umpv_x() {
-    # doesnt really work so well
+    # doesnt work so well
     umpv \
          --no-focus-on-open \
         --force-window=immediate \
@@ -50,25 +50,22 @@ kill_viewer_videox () {
             kill "$VIEWERPID"
         fi
 }
-# ==============================================
+
 #TODO:
 #    - FIND whats useful and not useful in this file
-# ================================================
 
-# ==================================
-# mpvc --------------------
+
+# mpvc
 SOCKET=${MPVC_SOCKET:-/tmp/mpvsocket}
             mpvc -S "$SOCKET" -a "$FILE" &
 #            mpvc -S "$SOCKET" -a "$(basename $FILE)" &
 #            mpvc -a $FILE &
 
-#$ =================================
-# mpvc.b -------------------
+# mpvc.b
 soc="/tmp/mpvsocket.$TABBEDPID"
 # - can put this at the bottom of start_tabbed
 
-# =====================================
-# mpvc.b t -------------------
+# mpvc.b t
 
 MPVPID="$(pgrep -f 'mpv .*$soc')"; mpvpid="$MPVPID"
 
@@ -100,14 +97,11 @@ if pgrep -f "mpv .*$soc" > /dev/null 2>&1; then
 #                i3-msg '[title="$(basename $FILE) - mpv"] focus'
 
 
-# =============================================
-# ============================================
 # prev-ta
 SOCKET=${MPVC_SOCKET:-/tmp/mpvsocket-prev}
 soc="${MPVC_SOCKET:-/tmp/mpvcsocket$TABBEDPID}"
 mpvc.str "$FILE" "$soc" "$XID"
 
-# ==================================
 # prev-tz
 #                 mpvc.str "$FILE" "$soc" "$XID" "image" &
 #                 doesnt work for 'images' atm
